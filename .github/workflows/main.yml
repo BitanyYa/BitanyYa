@@ -2,33 +2,47 @@ name: GitHub Contribution Snake
 
 on:
   schedule:
-    - cron: '0 0 * * *'
-  workflow_dispatch:
+    - cron: '0 0 * * *'   # runs daily at midnight UTC
+  workflow_dispatch:       # allows manual trigger
 
 jobs:
   build-and-push-snake:
     runs-on: ubuntu-latest
+
     steps:
+      # 1️⃣ Checkout repo
       - uses: actions/checkout@v3
 
+      # 2️⃣ Set up Node.js
       - uses: actions/setup-node@v3
         with:
           node-version: '20'
 
-      - name: Install dependencies
+      # 3️⃣ Install snake generator globally
+      - name: Install snake generator
         run: npm install -g github-contribution-grid-snake
 
+      # 4️⃣ Ensure output folder exists
       - name: Create output folder
         run: mkdir -p output
 
+      # 5️⃣ Generate contribution snake (safe)
       - name: Generate GitHub contribution snake
-        run: npx github-contribution-grid-snake -u <username> -o output/github-contribution-grid-snake.svg -t ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Generating contribution snake..."
+          npx github-contribution-grid-snake \
+            -u <username> \
+            -o output/github-contribution-grid-snake.svg \
+            -t ${{ secrets.GITHUB_TOKEN }} \
+            || echo "Snake generation failed, continuing workflow"
 
+      # 6️⃣ Configure Git (required to commit)
       - name: Configure Git
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
+      # 7️⃣ Commit & push changes safely
       - name: Commit and push snake
         run: |
           git add output/github-contribution-grid-snake.svg
