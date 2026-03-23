@@ -1,24 +1,45 @@
-name: Generate Snake
+name: GitHub Contribution Snake
 
 on:
   schedule:
-    - cron: "0 0 * * *"
-  workflow_dispatch:
+    - cron: '0 0 * * *' # runs daily at midnight UTC
+  workflow_dispatch:     # allows manual trigger
 
 jobs:
-  build:
+  build-and-push-snake:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: Platane/snk@v3
-        with:
-          github_user_name: yourusername
-          outputs: |
-            dist/github-contribution-grid-snake.svg
+      # Step 1: Checkout the repo
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - uses: crazy-max/ghaction-github-pages@v3
+      # Step 2: Set up Node.js (required for snake generator)
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          target_branch: output
-          build_dir: dist
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          node-version: '20'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Generate contribution snake
+      - name: Generate GitHub contribution snake
+        run: |
+          npx github-contribution-grid-snake \
+            -u <username> \
+            -o output/github-contribution-grid-snake.svg
+
+      # Step 5: Configure Git
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      # Step 6: Commit & push changes
+      - name: Commit and push snake
+        run: |
+          git add output/github-contribution-grid-snake.svg
+          git commit -m "Update contribution snake" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/<username>/<repo>.git HEAD:main
