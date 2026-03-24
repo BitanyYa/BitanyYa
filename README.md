@@ -85,7 +85,7 @@
 ## 📝 Top Languages
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=BitanyYa&layout=compact&theme=tokyonight" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=BitanyYa&cache_seconds=1&layout=compact&theme=tokyonight" />
 </p>
 
 ---
