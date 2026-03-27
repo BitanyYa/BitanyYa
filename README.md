@@ -75,7 +75,6 @@
 ## 📊 GitHub Stats
 
 <p align="center">
- <img src="https://github-readme-stats.vercel.app/api?username=BitanyYa&theme=tokyonight" />
   <br/>
   <img src="https://github-readme-streak-stats.herokuapp.com/?user=BitanyYa&cache_seconds=1&theme=tokyonight" />
 </p>
